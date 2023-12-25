@@ -25,7 +25,7 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot)
    git clone https://github.com/AhmedMondo/Teleube.git
    ```
 
-   1- Set up your Telegram bot token and configure the necessary environment variables.
+   1- Set up your Telegram bot token and configure the necessary environment variables.\
    2- Install dependencies:
 
 
