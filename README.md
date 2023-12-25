@@ -41,11 +41,11 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot)
 Contributions, issues, and feature requests are welcome! Feel free to open issues or submit pull requests to enhance Teleube.
 
 ## Contact me
-[Telegram](https://t.me/Ahmed_Mondo)
-[Discord](https://discord.com/users/583428943378513940)
+<img src="https://w7.pngwing.com/pngs/419/837/png-transparent-telegram-icon-telegram-logo-computer-icons-telegram-blue-angle-triangle-thumbnail.png" width="20" height="25"> [Telegram](https://t.me/Ahmed_Mondo)\
+<img src="https://w7.pngwing.com/pngs/842/992/png-transparent-discord-computer-servers-teamspeak-discord-icon-video-game-smiley-online-chat-thumbnail.png" width="20" height="25"> [Discord](https://discord.com/users/583428943378513940)
 
 ### Donate
-[Paypal](https://paypal.me/mondo288)
+<img src="https://w7.pngwing.com/pngs/803/833/png-transparent-logo-paypal-computer-icons-paypal-blue-angle-logo-thumbnail.png" width="20" height="25"> [PayPal](https://paypal.me/mondo288)
 ## License
 
 This project is licensed under the MIT License.
