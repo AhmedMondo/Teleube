@@ -40,6 +40,12 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot)
 ## Contributing
 Contributions, issues, and feature requests are welcome! Feel free to open issues or submit pull requests to enhance Teleube.
 
+## Contact me
+[Telegram](https://t.me/Ahmed_Mondo)
+[Discord](https://discord.com/users/583428943378513940)
+
+### Donate
+[Paypal](https://paypal.me/mondo288)
 ## License
 
 This project is licensed under the MIT License.
