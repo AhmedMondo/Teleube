@@ -3,11 +3,21 @@ const TelegramBot = require("node-telegram-bot-api");
 const ytdl = require("ytdl-core");
 const check = require("./functions/fileSize");
 const axios = require("axios");
-const { TiktokDL } = require("@tobyg74/tiktok-api-dl")
+const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
 // Create a bot instance
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 // Function to download a YouTube video and send it as a video file
+
+const SoundCloud = require("soundcloud-scraper");
+const {
+  validateScURL,
+  validateTiktTokURL,
+  getTikTokLink,
+  getSoundcloudLink,
+} = require("./functions/validateURL");
+const soundcloud = new SoundCloud.Client();
+
 async function downloadVideo(msg, url) {
   try {
     // Get video information and thumbnail URL
@@ -49,7 +59,6 @@ async function downloadVideo(msg, url) {
     console.error(error);
   }
 }
-let tiktokRegex = /^.*https:\/\/(?:m|www|vm)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video)\/|\?shareId=|\&item_id=)(\d+))|\w+)/g
 bot.on("message", async (msg) => {
   /* if(msg.chat.type !== "private") return; */
   let text = msg.text;
@@ -64,61 +73,84 @@ bot.on("message", async (msg) => {
       }
     );
     downloadVideo(message, text);
-  } else if(tiktokRegex.test(text)) {
-
-const tiktok_url = text.match(tiktokRegex)[0]
-    let message = await bot.sendMessage(
-      chatId,
-      "⏳ Obtaining Information...",
-      {
-        reply_to_message_id: msg.message_id,
+  } else if (validateTiktTokURL(text)) {
+    const tiktok_url = getTikTokLink(text);
+    let message = await bot.sendMessage(chatId, "⏳ Obtaining Information...", {
+      reply_to_message_id: msg.message_id,
+    });
+    let opts = {
+      chat_id: chatId,
+      message_id: message.message_id,
+    };
+    TiktokDL(tiktok_url, {
+      version: "v1",
+    }).then(async (result) => {
+      if (result.status == "success" && result.result.type == "video") {
+        var firstUrl = result.result.video[0];
+        try {
+          const response = await axios({
+            method: "GET",
+            url: firstUrl,
+            responseType: "arraybuffer",
+          });
+          let size = await check(firstUrl);
+          bot.editMessageText(`Uploading to Telegram... (${size})`, opts);
+          return bot
+            .sendVideo(chatId, response.data, {
+              caption: `Caption: ${result.result?.description}\nUser: (${result.result.author.username})`,
+            })
+            .then(() => {
+              bot.editMessageText("Thank you for using Teleube.", opts);
+            })
+            .catch((err) => {
+              bot.editMessageText("Error Happened: \n\n" + err.message, opts);
+            });
+        } catch (error) {
+          bot.editMessageText(
+            "Error downloading the video: \n\n" + error,
+            opts
+          );
+          console.error("Error downloading the video:", error);
+        }
+      } else {
+        bot.editMessageText("Failed to get Video Information", opts);
       }
-    );
-  let opts = {
-  chat_id : chatId,
-  message_id : message.message_id
-  }
-TiktokDL(tiktok_url, {
-  version: "v1" 
-}).then(async (result) => {
-  if(result.status == "success" && result.result.type == "video") {
-
-    var firstUrl = result.result.video[0]
-    try {
-      const response = await axios({
-        method: "GET",
-        url: firstUrl,
-        responseType: "arraybuffer",
-      });
-      let size = await check(firstUrl)
-      bot.editMessageText(
-        `Uploading to Telegram... (${size})`,
-        opts
-      );
-       return bot
-        .sendVideo(chatId , response.data, {
-          caption : `Caption: ${result.result?.description}\nUser: (${result.result.author.username})`
-        })
-        .then(() => { 
-
+    });
+  } else if (validateScURL(text)) {
+    let message = await bot.sendMessage(chatId, "⏳ Obtaining Information...", {
+      reply_to_message_id: msg.message_id,
+    });
+    let opts = {
+      chat_id: chatId,
+      message_id: message.message_id,
+    };
+    soundcloud.getSongInfo(getSoundcloudLink(text)).then(async (song) => {
+      let url = await soundcloud.fetchStreamURL(song.trackURL);
+      try {
+        const response = await axios({
+          method: "GET",
+          url: url,
+          responseType: "arraybuffer",
+        });
+        let size = await check(url);
+        bot.editMessageText(`Uploading to Telegram... (${size})`, opts);
+        return bot
+          .sendAudio(chatId, response.data, {
+            title: `${song.title}`,
+          })
+          .then(() => {
             bot.editMessageText("Thank you for using Teleube.", opts);
           })
-        .catch((err) => {
-          bot.editMessageText("Error Happened: \n\n" + err.message, opts);
-        }); 
-    } catch (error) {
-      bot.editMessageText(
-        "Error downloading the video: \n\n" + error,
-        opts
-      );
-      console.error("Error downloading the video:", error);
-    }
+          .catch((err) => {
+            bot.editMessageText("Error Happened: \n\n" + err.message, opts);
+          });
+      } catch (error) {
+        bot.editMessageText("Error downloading the video: \n\n" + error, opts);
+        console.error("Error downloading the video:", error);
+      }
+    });
   } else {
-  bot.editMessageText("Failed to get Video Information" , opts)
-  }
-})
-  }else {
-    bot.sendMessage(chatId, "This is not Valid YouTube/TikTok URL");
+    bot.sendMessage(chatId, "This is not Valid YouTube/TikTok/SoundCloud URL");
   }
 });
 
@@ -137,6 +169,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
     };
     bot.editMessageText("Getting video Quality", opts);
     ytdl(`${url}`).on("info", (info) => {
+      console.log(info);
       let formats = info.formats.filter((s) => s.hasVideo && s.hasAudio); // get Videos
       performAsyncTasks(formats, msg.chat.id, "Video")
         .then((finalResults) => {
@@ -149,7 +182,10 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
             }),
           };
           bot
-            .editMessageText("Choose Video Quality: ", finalOpts)
+            .editMessageText(
+              "Choose Video Quality: \n\nPlease note if you couldn't see size resend the link",
+              finalOpts
+            )
             .catch((err) => {
               bot.editMessageText("Error Happened:\n" + err.message, opts);
             });
@@ -167,7 +203,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
     let size = matchResult[4];
     let sizeCheck = convertToBytes(size);
     let mainChekcer = megabytesToBytes(1500);
-     if (sizeCheck > mainChekcer) {
+    if (sizeCheck > mainChekcer) {
       var opts = {
         chat_id: msg.chat.id,
         message_id: msg.message_id,
@@ -191,7 +227,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
           reply_to_message_id: callbackQuery.message.message_id,
         }
       );
-    } 
+    }
     bot
       .editMessageText("Ok Hold on little bit we do some magic here.", opts)
       .then(() => {
@@ -209,15 +245,14 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
               `Uploading to Telegram... (${matchResult[4]})`,
               opts
             );
-             return bot
+            return bot
               .sendVideo(msg.chat.id, response.data)
-              .then(() => { 
-
-                  bot.editMessageText("Thank you for using Teleube.", opts);
-                })
+              .then(() => {
+                bot.editMessageText("Thank you for using Teleube.", opts);
+              })
               .catch((err) => {
                 bot.editMessageText("Error Happened: \n\n" + err.message, opts);
-              }); 
+              });
           } catch (error) {
             bot.editMessageText(
               "Error downloading the video: \n\n" + error,
@@ -239,7 +274,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
     bot.editMessageText("Getting Audio Quality", opts);
     ytdl(`${url}`).on("info", (info) => {
       let durationInSeconds = info.videoDetails.lengthSeconds;
-      let tenMinutesInSeconds = 10 * 60
+      let tenMinutesInSeconds = 10 * 60;
 
       if (durationInSeconds > tenMinutesInSeconds) {
         return bot.sendMessage(
@@ -254,7 +289,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
             }),
             reply_to_message_id: callbackQuery.message.message_id,
           }
-        );      
+        );
       }
       let formats = info.formats.filter((s) => !s.hasVideo && s.hasAudio); // get Videos
       performAsyncTasks(formats, msg.chat.id, "Audio")
@@ -333,7 +368,9 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
               audioStream.on("end", () => {
                 const audioBuffer = Buffer.concat(buffers);
                 bot
-                  .sendVoice(msg.chat.id, audioBuffer)
+                  .sendAudio(msg.chat.id, audioBuffer , {
+                    title : info.videoDetails.title
+                  })
                   .then(() => {
                     bot.editMessageText("Thank you for using Teleube.", opts);
                   })

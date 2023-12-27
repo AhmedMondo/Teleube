@@ -33,9 +33,13 @@
     "tiktok-audio-downloader",
     "tiktok-to-mp4",
     "tiktok-converter",
-    "tiktok-without-watermark"
-  ]
-,
+    "tiktok-without-watermark",
+    "soundcloud",
+    "soundcloud-downloader",
+    "soundcloud-to-mp3",
+    "soundcloud-audio-downloader",
+    "audio-from-soundcloud"
+  ],
   "author": "https://github.com/AhmedMondo",
   "license": "MIT",
   "dependencies": {
@@ -43,6 +47,7 @@
     "axios": "^1.6.2",
     "node-telegram-bot-api": "^0.64.0",
     "nodemon": "^3.0.2",
+    "soundcloud-scraper": "^5.0.3",
     "ytdl-core": "^4.11.5"
   }
 }

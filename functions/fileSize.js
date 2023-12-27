@@ -17,7 +17,7 @@ async function check(url) {
         req.once("response", async (r) => {
           let c = parseInt(r.headers["content-length"]);
           if (!isNaN(c) && r.statusCode === 200) res(formatBytes(c));
-          else check(url);
+          else return 'Size Error';
         });
         req.once("error", async (e) => rej(e));
       } else {
