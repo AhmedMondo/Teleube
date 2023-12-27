@@ -15,7 +15,7 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot)
 ## Usage
 
 1. Start a chat with the bot by clicking [here](https://t.me/Teleube_bot) or searching for @Teleube_bot in Telegram.
-2. Send the bot a YouTube or TikTok video link.
+2. Send the bot a YouTube or TikTok video or SoundCloud link.
 3. Choose the desired format (MP4 or MP3 for YouTube, MP4 for TikTok) for the download.
 4. The bot will process the request and provide the download link for the selected format.
 
