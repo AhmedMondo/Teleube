@@ -1,5 +1,5 @@
 # Teleube Bot
-Teleube is a Telegram bot that enables users to download YouTube videos in either MP4 or MP3 format and TikTok videos in MP4 format directly from within Telegram.
+Teleube is a Telegram bot that enables users to download YouTube videos in either MP4 or MP3 format and TikTok videos in MP4 format directly from within Telegram. It also allows downloading SoundCloud audio content.
 
 ## Live Demo
 
@@ -9,6 +9,7 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot)
 
 - Download YouTube videos in MP4 or MP3 format
 - Download TikTok videos in MP4 format without a watermark
+- Download SoundCloud audio in MP3 format
 - Simple and easy-to-use interface within Telegram
 
 ## Usage
