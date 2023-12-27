@@ -3,6 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const ytdl = require("ytdl-core");
 const check = require("./functions/fileSize");
 const axios = require("axios");
+const { TiktokDL } = require("@tobyg74/tiktok-api-dl")
 // Create a bot instance
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
@@ -48,7 +49,7 @@ async function downloadVideo(msg, url) {
     console.error(error);
   }
 }
-
+let tiktokRegex = /^.*https:\/\/(?:m|www|vm)?\.?tiktok\.com\/((?:.*\b(?:(?:usr|v|embed|user|video)\/|\?shareId=|\&item_id=)(\d+))|\w+)/g
 bot.on("message", async (msg) => {
   /* if(msg.chat.type !== "private") return; */
   let text = msg.text;
@@ -63,8 +64,61 @@ bot.on("message", async (msg) => {
       }
     );
     downloadVideo(message, text);
+  } else if(tiktokRegex.test(text)) {
+
+const tiktok_url = text.match(tiktokRegex)[0]
+    let message = await bot.sendMessage(
+      chatId,
+      "⏳ Obtaining Information...",
+      {
+        reply_to_message_id: msg.message_id,
+      }
+    );
+  let opts = {
+  chat_id : chatId,
+  message_id : message.message_id
+  }
+TiktokDL(tiktok_url, {
+  version: "v1" 
+}).then(async (result) => {
+  if(result.status == "success" && result.result.type == "video") {
+
+    var firstUrl = result.result.video[0]
+    try {
+      const response = await axios({
+        method: "GET",
+        url: firstUrl,
+        responseType: "arraybuffer",
+      });
+      let size = await check(firstUrl)
+      bot.editMessageText(
+        `Uploading to Telegram... (${size})`,
+        opts
+      );
+       return bot
+        .sendVideo(chatId , response.data, {
+          caption : `Caption: ${result.result?.description}\nUser: (${result.result.author.username})`
+        })
+        .then(() => { 
+
+            bot.editMessageText("Thank you for using Teleube.", opts);
+          })
+        .catch((err) => {
+          bot.editMessageText("Error Happened: \n\n" + err.message, opts);
+        }); 
+    } catch (error) {
+      bot.editMessageText(
+        "Error downloading the video: \n\n" + error,
+        opts
+      );
+      console.error("Error downloading the video:", error);
+    }
   } else {
-    bot.sendMessage(chatId, "This is not Valid YouTube URL");
+  bot.editMessageText("Failed to get Video Information" , opts)
+  }
+})
+  }else {
+    bot.sendMessage(chatId, "This is not Valid YouTube/TikTok URL");
   }
 });
 
@@ -112,8 +166,8 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
     };
     let size = matchResult[4];
     let sizeCheck = convertToBytes(size);
-    let mainChekcer = megabytesToBytes(50);
-    if (sizeCheck > mainChekcer) {
+    let mainChekcer = megabytesToBytes(1500);
+     if (sizeCheck > mainChekcer) {
       var opts = {
         chat_id: msg.chat.id,
         message_id: msg.message_id,
@@ -126,7 +180,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
       };
       return bot.sendMessage(
         msg.chat.id,
-        "Sorry but the video is bigger than 50MBs You can subscribe if you want to download big videos",
+        "Sorry but the video is bigger than 1.5GBs You can subscribe if you want to download big videos",
         {
           reply_markup: JSON.stringify({
             inline_keyboard: [
@@ -137,7 +191,7 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
           reply_to_message_id: callbackQuery.message.message_id,
         }
       );
-    }
+    } 
     bot
       .editMessageText("Ok Hold on little bit we do some magic here.", opts)
       .then(() => {
@@ -155,14 +209,15 @@ bot.on("callback_query", async function onCallbackQuery(callbackQuery) {
               `Uploading to Telegram... (${matchResult[4]})`,
               opts
             );
-            return bot
+             return bot
               .sendVideo(msg.chat.id, response.data)
-              .then(() => {
-                bot.editMessageText("Thank you for using Teleube.", opts);
-              })
+              .then(() => { 
+
+                  bot.editMessageText("Thank you for using Teleube.", opts);
+                })
               .catch((err) => {
                 bot.editMessageText("Error Happened: \n\n" + err.message, opts);
-              });
+              }); 
           } catch (error) {
             bot.editMessageText(
               "Error downloading the video: \n\n" + error,
