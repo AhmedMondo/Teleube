@@ -21,9 +21,7 @@
     "audio-converter",
     "video-converter",
     "telebot",
-    "telegraph",
     "teleube",
-    "telemedia",
     "media-downloader",
     "download-manager",
     "tiktok",
@@ -33,21 +31,30 @@
     "tiktok-audio-downloader",
     "tiktok-to-mp4",
     "tiktok-converter",
-    "tiktok-without-watermark",
     "soundcloud",
     "soundcloud-downloader",
     "soundcloud-to-mp3",
     "soundcloud-audio-downloader",
-    "audio-from-soundcloud"
-  ],
+    "audio-from-soundcloud",
+    "instagram-reels",
+    "instagram",
+    "instagram-bot",
+    "instagram-downloader",
+    "instagram-video-downloader",
+    "instagram-to-mp4",
+    "instagram-converter",
+    "instagram-media-downloader"
+],
   "author": "https://github.com/AhmedMondo",
   "license": "MIT",
   "dependencies": {
     "@tobyg74/tiktok-api-dl": "^1.0.13",
     "axios": "^1.6.2",
+    "mongoose": "^8.0.3",
     "node-telegram-bot-api": "^0.64.0",
     "nodemon": "^3.0.2",
     "soundcloud-scraper": "^5.0.3",
-    "ytdl-core": "^4.11.5"
+    "ytdl-core": "^4.11.5",
+    "ytpl": "^2.3.0"
   }
 }

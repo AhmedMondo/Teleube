@@ -1,5 +1,6 @@
 const https = require("https");
 const http = require("http");
+const language = require("../Languages");
 
 /**
  * @example file_size_url("https://example.com")
@@ -7,9 +8,9 @@ const http = require("http");
  * @returns {Promise} resolves once complete, otherwise rejects
  **/
 
-async function check(url) {
+async function check(url , userData) {
   if (!url) return Promise.reject(new Error("Invalid Url"));
-
+  let lang = language[userData.language]
   return new Promise(async (res, rej) => {
     try {
       if (url.startsWith("https://") || url.startsWith("http://")) {
@@ -17,7 +18,7 @@ async function check(url) {
         req.once("response", async (r) => {
           let c = parseInt(r.headers["content-length"]);
           if (!isNaN(c) && r.statusCode === 200) res(formatBytes(c));
-          else return 'Size Error';
+          else res(lang.error.size_fail);;
         });
         req.once("error", async (e) => rej(e));
       } else {

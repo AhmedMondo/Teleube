@@ -1,0 +1,42 @@
+{
+  "welcome_message": "👋 Hey there! I'm Teleube, created by @Ahmed_Mondo.\n\nHere are the commands you can use:\n\n➡️ To use me, simply paste a link from YouTube, Soundcloud, or TikTok (video or audio), and witness the magic!",
+  "thank_message": "<b>Thank you for using Teleube.</b>",
+  "info_load": "⏳ <b>Gathering Information...</b>",
+  "quality_video_load": "🎥 <b>Fetching Video Quality...</b>",
+  "quality_audio_load": "🔊 <b>Fetching Audio Quality...</b>",
+  "uploading": "📤 <b>Uploading to Telegram...</b>",
+  "loading": "⏳ <b>Hold on for a moment, we're working some magic here.</b>",
+  "invalid_link": "⚠️ <b>This is not a valid YouTube/TikTok/SoundCloud/Instagram Reel URL.</b>",
+  "soon": "🕒 <b>Coming Soon...</b>",
+  "choose_video_quality": "<b>Choose Video Quality:</b>\n\nPlease note: If the size isn't visible, kindly resend the link. 🎬",
+  "extracting_audio": "⏳ <b>Extracting MP3 Audio...</b>",
+  "merging": "<i>Merging... ⚙️</i>",
+  "playlist_found": "We've found a Playlist ID in the URL\n. 🎵 Would you like to download the entire playlist or just the video?",
+  "premium": {
+    "max_operation": "⚠️ <b>Sorry, you can't perform more than 3 operations concurrently.</b>\n\nSubscribe to access more operations!",
+    "long_audio": "⚠️ <b>Sorry, the audio exceeds 10 minutes in length.</b>\n\nSubscribe to unlock access to download longer audios!",
+    "big_videos": "📹 <b>Apologies, the video size exceeds 100MB.</b>\n\nSubscribe to access downloading larger videos.",
+    "playlist": "<i>Sorry, downloading playlists is only available for subscribed users. 🎵</i>"
+  },
+  "buttons": {
+    "subscribe": "Subscribe",
+    "video": "Video",
+    "audio": "Audio",
+    "download_video": "Download as Video MP4",
+    "download_audio": "Download as Audio MP3",
+    "playlist": "Playlist"
+  },
+  "error": {
+    "general": "<b>Error Occurred:</b>\n\n",
+    "download_video": "<b>Error downloading the video:</b>\n\n",
+    "download_audio": "<b>Error downloading the audio:</b>\n\n",
+    "video_info_fail": "<i>Failed to get Video Information ❌</i>",
+    "audio_info_fail": "<i>Failed to get Audio Information ❌</i>",
+    "live": "<i>Unfortunately, live content cannot be downloaded. 🚫</i>",
+    "video_unavailable": "<i>This video has been deleted or is currently unavailable. ❌📹</i>",
+    "size_fail": "Couldn't retrieve file size. 📁❌"
+  },
+  "soundcloud": {
+    "invalid_track": "⚠️ <b>This is not a valid track on SoundCloud.</b>"
+  }
+}
