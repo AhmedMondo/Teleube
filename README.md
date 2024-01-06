@@ -21,6 +21,12 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot) :rocket:
 3. Choose the desired format (MP4 or MP3 for YouTube, MP4 for TikTok, etc.) for the download. :arrow_down:
 4. The bot will process the request and provide the download link for the selected format. :inbox_tray:
 
+## Upcoming Changes
+
+- **Facebook Videos/Reels**: Adding support for downloading videos or reels from Facebook.
+- **Spotify**: Introducing the capability to download content from Spotify.
+
+
 ## How to Deploy
 
 1. Clone this repository:
@@ -40,7 +46,7 @@ Try the bot live: [Teleube Bot](https://t.me/Teleube_bot) :rocket:
    ```js
    npm run start
    ```
-
+   
 ## Contributing
 Contributions, issues, and feature requests are welcome! Feel free to open issues or submit pull requests to enhance Teleube.
 
